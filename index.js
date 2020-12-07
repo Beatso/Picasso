@@ -20,10 +20,9 @@ client.on("message", message => {
 		!message.content.startsWith(`<@${client.user.id}>`) &&
 		!message.content.startsWith(`<@!${client.user.id}>`)
 	) return
+
+	if (message.author.bot) return
 	
-
-	// if (message.reference) console.log( message.referencedMessage.attachments.first().url)
-
 	if (message.reference) scaleAndSend ( message.referencedMessage.attachments.first(), message.channel )
 	else inputAttachment = scaleAndSend (message.attachments.first(), message.channel )
 	
