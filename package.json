@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "discord.js": "github:discordjs/discord.js#pull/4874/head",
     "dotenv": "^8.2.0",
