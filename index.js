@@ -1,7 +1,7 @@
 const express = require("express")
 const dotenv = require("dotenv")
 const Discord = require("discord.js")
-const scaleImage = require("./scale")
+const scalePixelArt = require("scale-pixel-art")
 const request = require("request").defaults({ encoding: null })
 
 dotenv.config()
@@ -39,18 +39,21 @@ const scaleAndSend = (inputAttachment, channel) => {
 
 	const inputAttachmentURL = inputAttachment.url
 
-	request.get(inputAttachmentURL, (err, res, body) => {
-		scaleImage(body)
-			.then(buffer => {
-				const outputAttachment = new Discord.MessageAttachment(buffer, "response.png")
-				channel.send(outputAttachment)
+	request.get(inputAttachmentURL, (err, res, inputBuffer) => {
+		
+		scalePixelArt(inputBuffer, 20)
+			.then(outputBuffer => {
+				const outputAttachment = new Discord.MessageAttachment(outputBuffer, "response.png")
+				console.log(outputAttachment.size)
+				if (outputAttachment.size <= 8000000) {
+					channel.send(outputAttachment)
+						.catch(error => channel.send(`Sending the scaled image failed for the following reason:\n\`${error}\``))
+				} else channel.send("Could not send the scaled image because the file size was too big.")
 			})
-			.catch(error => {
-				channel.send(`There was an error trying to do that:\n\`${error}\``)
-				// console.error(error)
-			})
+			.catch(error => channel.send(`Scaling the image failed for the following reason:\n\`${error}\``))
+		
 	})
-
+	
 }
 
 // webserver to keep alive
