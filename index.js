@@ -44,8 +44,7 @@ const scaleAndSend = (inputAttachment, channel) => {
 		scalePixelArt(inputBuffer, 20)
 			.then(outputBuffer => {
 				const outputAttachment = new Discord.MessageAttachment(outputBuffer, "response.png")
-				console.log(outputAttachment.size)
-				if (outputAttachment.size <= 8000000) {
+				if (Buffer.byteLength(outputBuffer) <= 8000000) {
 					channel.send(outputAttachment)
 						.catch(error => channel.send(`Sending the scaled image failed for the following reason:\n\`${error}\``))
 				} else channel.send("Could not send the scaled image because the file size was too big.")
