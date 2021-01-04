@@ -54,8 +54,3 @@ const scaleAndSend = (inputAttachment, channel) => {
 	})
 	
 }
-
-// webserver to keep alive
-const server = express()
-server.all("/keepalive", (req,res) => res.send("Bot woken"))
-server.listen(1193, ()=>console.log("server running"))
