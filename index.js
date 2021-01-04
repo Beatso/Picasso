@@ -1,4 +1,3 @@
-const express = require("express")
 const dotenv = require("dotenv")
 const Discord = require("discord.js")
 const scalePixelArt = require("scale-pixel-art")
