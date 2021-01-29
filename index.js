@@ -9,7 +9,7 @@ const client = new Discord.Client()
 
 client.once("ready", ()=>{
 	console.log("bot running")
-	// client.user.setActivity("beatso.tk/project/picasso", {type:"WATCHING"})
+	client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" }).catch(console.error);
 })
 client.login(process.env.bottoken)
 
