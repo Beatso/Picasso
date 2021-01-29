@@ -9,7 +9,7 @@ const client = new Discord.Client()
 
 client.once("ready", ()=>{
 	console.log("bot running")
-	client.user.setActivity("beatso.tk/project/picasso", {type:"WATCHING"})
+	// client.user.setActivity("beatso.tk/project/picasso", {type:"WATCHING"})
 })
 client.login(process.env.bottoken)
 
