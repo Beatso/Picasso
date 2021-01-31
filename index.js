@@ -7,9 +7,12 @@ dotenv.config()
 
 const client = new Discord.Client()
 
-client.once("ready", ()=>{
-	console.log("bot running")
-	client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" }).catch(console.error);
+client.once("ready", () => {
+	console.log("bot running");
+	(function startUpdatingStatus () {
+		client.user.setActivity(`${client.guilds.cache.size} servers`, { type: 'WATCHING' }).catch(console.error) // update status
+		setTimeout(() => startUpdatingStatus(), 3600000) // run again in an hour
+	})()
 })
 client.login(process.env.bottoken)
 
