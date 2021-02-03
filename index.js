@@ -19,8 +19,8 @@ client.login(process.env.bottoken)
 client.on("message", message => {
 	
 	if (
-		!message.content.startsWith(`<@${client.user.id}>`) &&
-		!message.content.startsWith(`<@!${client.user.id}>`)
+		!message.content.includes(`<@${client.user.id}>`) &&
+		!message.content.includes(`<@!${client.user.id}>`)
 	) return
 
 	if (message.author.bot) return
