@@ -43,7 +43,8 @@ const scaleAndSend = (inputAttachment, channel) => {
 
 	request.get(inputAttachmentURL, (err, res, inputBuffer) => {
 		
-		scalePixelArt(inputBuffer, 20)
+		const scaleFactor = Math.floor(512 / Math.min(inputAttachment.width, inputAttachment.height))
+		scalePixelArt(inputBuffer, scaleFactor)
 			.then(outputBuffer => {
 				const outputAttachment = new Discord.MessageAttachment(outputBuffer, "response.png")
 				if (Buffer.byteLength(outputBuffer) <= 8000000) {
