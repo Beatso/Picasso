@@ -40,13 +40,16 @@ client.on("message", message => {
 	request.get(inputAttachmentURL, (err, res, inputBuffer) => {
 		
 		const scaleFactor = Math.floor(512 / Math.min(inputAttachment.width, inputAttachment.height))
+
+		if (scaleFactor < 1) message.channel.send("Could not scale the image because it was too large.")
+
 		scalePixelArt(inputBuffer, scaleFactor)
 			.then(outputBuffer => {
 				const outputAttachment = new Discord.MessageAttachment(outputBuffer, "response.png")
 				if (Buffer.byteLength(outputBuffer) <= 8000000) {
 					message.channel.send(outputAttachment)
 						.catch(error => message.channel.send(`Sending the scaled image failed for the following reason:\n\`${error}\``))
-				} else message.channel.send("Could not send the scaled image because the file size was too big.")
+				} else message.channel.send("Could not send the scaled image because the file size was too large.")
 			})
 			.catch(error => message.channel.send(`Scaling the image failed for the following reason:\n\`${error}\``))
 		
