@@ -1,5 +1,4 @@
-<img align="left" width="50" height="50" src="https://github.com/Beatso/Picasso/blob/main/avatar/avatar_upscaled_cropped.png"><h1>Picasso</h1>
-
+# Picasso
 
 This is a discord bot to easily scale pixel art, so it can be at a visible resolultion from the original image.
 
