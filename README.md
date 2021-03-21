@@ -9,4 +9,4 @@ To scale an image, either ping the bot in a message with an image attached, or p
 [Discord Bot List](https://top.gg/bot/763842999573544981)  
 [Support Server](https://www.beatso.tk/discord)  
 
-<img width="400" src="https://www.beatso.tk/project/picasso/reply.gif">    <img width="400" src="https://www.beatso.tk/project/picasso/direct.gif">
+<img width="400" src="https://www.beatso.tk/project/picasso/reply.gif"> <img width="400" src="https://www.beatso.tk/project/picasso/direct.gif">
