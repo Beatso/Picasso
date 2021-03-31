@@ -2,7 +2,7 @@
 
 This is a discord bot to easily scale pixel art, so it can be at a visible resolultion from the original image.
 
-To scale an image, either ping the bot in a message with an image attached, or ping the bot in a reply to a message with an image attached.
+To scale an image, either mention the bot in a message with an image attached, or mention the bot in a reply to a message with an image attached.
 
 Suggestions and bug reports should be reported as [issues](https://github.com/Beatso/Picasso/issues/new).  
 Please see the [security policy](https://github.com/Beatso/Picasso/security/policy) to report sensitive and security vulnerabilities.
