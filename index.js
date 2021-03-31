@@ -11,7 +11,7 @@ const client = new Discord.Client()
 client.once("ready", () => {
 	console.log("bot running");
 	(function startUpdatingStatus () {
-		client.user.setActivity(`github.com/Beatso/Picasso • ${client.guilds.cache.size} servers`, { type: 'WATCHING' }).catch(console.error) // update status
+		client.user.setActivity(`@Picasso | ${client.guilds.cache.size} servers`, { type: 'WATCHING' }).catch(console.error) // update status
 		setTimeout(() => startUpdatingStatus(), 3600000) // run again in an hour
 	})()
 })
@@ -32,7 +32,7 @@ client.on("message", message => {
 	else inputAttachment = message.attachments.first()
 
 	if (inputAttachment==undefined) {
-		message.channel.send("There was no attachment on that message.\nPing me in a message with an image, or ping the bot in a reply to an image to scale it.")
+		message.channel.send("There was no attachment on that message.\nMention me in a message with an image, or mention me in a reply to an image to scale it.\nFind more info about the bot here: <https://github.com/Beatso/Picasso>")
 		return
 	}
 
