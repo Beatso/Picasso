@@ -28,8 +28,6 @@ client.on("message", message => {
 		? message.referencedMessage.attachments.first()
 		: message.attachments.first()
 
-	if (inputAttachment==undefined) {
-		message.channel.send("There was no attachment on that message.\nMention me in a message with an image, or mention me in a reply to an image to scale it.\nFind more info about the bot here: <https://github.com/Beatso/Picasso>")
 		return
 	}
 
