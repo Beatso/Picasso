@@ -1,8 +1,6 @@
 // imports
 const dotenv = require("dotenv")
 const Discord = require("discord.js")
-const scalePixelArt = require("scale-pixel-art")
-const request = require("request").defaults({ encoding: null })
 
 dotenv.config()
 
