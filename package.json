@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "discord.js": "github:discordjs/discord.js#pull/4874/head",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.0",
     "request": "^2.88.2",
     "scale-pixel-art": "^1.0.0"
   }
