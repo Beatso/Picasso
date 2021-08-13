@@ -12,3 +12,5 @@ Please see the [security policy](https://github.com/Beatso/Picasso/security/poli
 [Support Server](https://www.beatso.tk/discord)  
 
 <img width="400" src="https://github.com/Beatso/old-website/blob/main/static/project/picasso/reply.gif?raw=true"> <img width="400" src="https://github.com/Beatso/old-website/blob/main/static/project/picasso/direct.gif?raw=true">
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=3913ec13fa90&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
