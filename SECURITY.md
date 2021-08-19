@@ -2,7 +2,6 @@
 
 ## Supported Versions
 
-
 | Version               | Supported          |
 | --------------------- | ------------------ |
 | latest on any branch  | :white_check_mark: |
