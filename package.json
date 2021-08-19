@@ -1,18 +1,19 @@
 {
-  "name": "picasso",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "discord.js": "^13.1.0",
-    "dotenv": "^8.6.0",
-    "request": "^2.88.2",
-    "scale-pixel-art": "^1.0.1"
-  }
+	"name": "picasso",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"discord.js": "^13.1.0",
+		"dotenv": "^8.6.0",
+		"prettier": "^2.3.2",
+		"request": "^2.88.2",
+		"scale-pixel-art": "^1.0.1"
+	}
 }
