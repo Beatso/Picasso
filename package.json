@@ -4,7 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index"
+		"start": "node index",
+		"prettier:check": "prettier --check .",
+		"prettier:write": "prettier --write ."
 	},
 	"keywords": [],
 	"author": "",
