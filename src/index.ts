@@ -2,6 +2,7 @@ import { REST } from "@discordjs/rest"
 import { APIAttachment, Routes } from "discord-api-types/v9"
 import { Client, Intents, Message } from "discord.js"
 import { config as dotenvConfig } from "dotenv"
+import fetch from "node-fetch"
 
 dotenvConfig()
 
@@ -81,7 +82,7 @@ client.on("interactionCreate", async (interaction) => {
 				})
 			} else if (typeof attachment === "string") {
 				interaction.reply({
-					content: "Could not fetch attachment.",
+					content: "Could not fetch attachment: was of type `string`",
 					ephemeral: true,
 				})
 			} else if (attachment.proxy_url.endsWith(".gif")) {
@@ -96,10 +97,19 @@ client.on("interactionCreate", async (interaction) => {
 					ephemeral: true,
 				})
 			} else {
-				interaction.reply({
+				try {
+					await (await fetch(attachment.proxy_url)).buffer()
 					// TODO : scale image and send as attachment
-					content: "scaled content goes here",
-				})
+					interaction.reply({
+						content: "scaled content goes here",
+						ephemeral: false,
+					})
+				} catch (error) {
+					interaction.reply({
+						content: `Could not fetch attachment:\n\`\`\`${error}\`\`\``,
+						ephemeral: true,
+					})
+				}
 			}
 		}
 	}
