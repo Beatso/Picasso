@@ -18,7 +18,7 @@
 		"dotenv": "^8.6.0",
 		"node-fetch": "^2.6.1",
 		"prettier": "^2.3.2",
-		"scale-pixel-art": "^1.1.0",
+		"scale-pixel-art": "^1.1.1",
 		"typescript": "^4.3.5"
 	},
 	"devDependencies": {
