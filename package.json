@@ -11,6 +11,9 @@
 	"keywords": [],
 	"author": "",
 	"license": "MIT",
+	"engines": {
+		"node": ">=16.6.0"
+	},
 	"dependencies": {
 		"@discordjs/rest": "0.1.0-canary.0",
 		"discord-api-types": "^0.22.0",
@@ -23,9 +26,6 @@
 	},
 	"devDependencies": {
 		"@types/node-fetch": "^2.5.12"
-	},
-	"engines": {
-		"node": ">=16.6.0"
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.3",
