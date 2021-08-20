@@ -238,7 +238,7 @@ const scaleImageFromMessage = async (
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isCommand()) {
 		if (interaction.commandName === "ping") {
-			await interaction.reply("POng!")
+			await interaction.reply("Pong!")
 		}
 	} else if (interaction.isContextMenu()) {
 		if (interaction.commandName === "Scale pixel art") {
