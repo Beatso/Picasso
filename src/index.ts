@@ -1,8 +1,28 @@
 import { REST } from "@discordjs/rest"
-import { APIAttachment, Routes } from "discord-api-types/v9"
-import { Client, Intents, Message } from "discord.js"
+import { APIMessage, Routes } from "discord-api-types/v9"
+import {
+	BufferResolvable,
+	Client,
+	DMChannel,
+	FileOptions,
+	Intents,
+	InteractionReplyOptions,
+	Message,
+	MessageActionRow,
+	MessageActionRowOptions,
+	MessageAttachment,
+	MessageButton,
+	MessageEmbed,
+	MessageMentionOptions,
+	MessagePayload,
+	NewsChannel,
+	StickerResolvable,
+	TextChannel,
+	ThreadChannel,
+} from "discord.js"
 import { config as dotenvConfig } from "dotenv"
 import fetch from "node-fetch"
+import scalePixelArt from "scale-pixel-art"
 
 dotenvConfig()
 
@@ -59,6 +79,161 @@ client.once("ready", () => {
 	)
 })
 
+/** Determines whether a given messsage is a `Message` or a `APIMessage`
+ * @param {APIMessage | Message} message - The message to check
+ * @returns {boolean} - `true` if the message is a `Message`, `false` if it is a `APIMessage`
+ */
+const isRealMessage = (message: Message | APIMessage) =>
+	(message as Message).url !== undefined
+
+/** Scales an image from a given message. Will show the user errors if something goes wrong (e.g. there is no image on the message)
+ * @param {Message} message - The message to scale from
+ */
+const scaleImageFromMessage = async (
+	message: Message,
+	interactionReply?: (
+		options: string | MessagePayload | InteractionReplyOptions,
+	) => Promise<Message | APIMessage | void>,
+) => {
+	const attachments = Array.from(message.attachments)
+	const attachment = attachments.length > 0 ? attachments[0][1] : null
+
+	// https://github.com/discordjs/discord.js/blob/e2e4f6518b3be85b1e05efff108f1459cc3082df/src/structures/interfaces/TextBasedChannel.js#L55
+	/**
+	 * Base options provided when sending.
+	 * @typedef {Object} BaseMessageOptions
+	 * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
+	 * @property {string} [nonce=''] The nonce for the message
+	 * @property {string} [content=''] The content for the message
+	 * @property {MessageEmbed[]} [embeds] The embeds for the message
+	 * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
+	 * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
+	 * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
+	 * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
+	 * @property {MessageActionRow[]|MessageActionRowOptions[]} [components]
+	 * Action rows containing interactive components for the message (buttons, select menus)
+	 * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
+	 */
+	interface BaseMessageOptions {
+		tts?: boolean
+		nonce?: string
+		content?: string
+		embeds?: MessageEmbed[]
+		allowedMentions?: MessageMentionOptions
+		files?: FileOptions[] | BufferResolvable[] | MessageAttachment[]
+		components?: MessageActionRow[] | MessageActionRowOptions[]
+		stickers?: StickerResolvable[]
+	}
+
+	interface InteractionReplySpecificMessageOptions {
+		ephemeral?: boolean
+		fetchReply?: boolean
+	}
+
+	/** Replies to the message given by the parent function. If `interactionReply` exists, the message will be a reply to an interaction. Otherwise, the message containing the original image will be replied to.
+	 * @param {string | BaseMessageOptions} baseOptions - The content to reply with. Will be used for both interaction and message replies.
+	 * @param {InteractionReplySpecificMessageOptions} [interactionOptions] - Options for an interaction reply, if used.
+	 * @returns {void}
+	 * @example
+	 * // Replys to the message with the content "Hello, world!" and with an attached file; ephemerally if an interaction reply is used.
+	 * reply(
+			{
+				content: "Hello, world",
+				files: [{ attachment: fs.readFileSync("./hello_world.txt") }],
+			},
+			{ ephemeral: true },
+		)
+	 */
+	const reply = (
+		baseOptions: string | BaseMessageOptions,
+		interactionOptions?: InteractionReplySpecificMessageOptions,
+	) => {
+		if (interactionReply) {
+			interactionReply(Object.assign(baseOptions, interactionOptions || {}))
+		} else {
+			message.reply(baseOptions)
+		}
+	}
+
+	if (!attachment?.width) {
+		reply(
+			{
+				content:
+					"Picasso can only scale pixel art on messages that have an image attached.",
+			},
+			{ ephemeral: true },
+		)
+	} else if (typeof attachment === "string") {
+		reply(
+			{
+				content: "Could not fetch attachment: was of type `string`",
+			},
+			{ ephemeral: true },
+		)
+	} else if (attachment.proxyURL.endsWith(".gif")) {
+		reply(
+			{
+				content:
+					"Picasso can not scale GIFs yet. Please upload a PNG or JPG still image.",
+			},
+			{ ephemeral: true },
+		)
+	} else if (!/\.(png|jpg|jpeg)$/.test(attachment.proxyURL)) {
+		reply(
+			{
+				content: "Attachments must be a PNG or JPG image.",
+			},
+			{ ephemeral: true },
+		)
+	} else {
+		try {
+			const imageBuffer = await (await fetch(attachment.proxyURL)).buffer()
+			const scaleFactor = Math.floor(
+				512 / // max width or length of scaled image
+					Math.min(attachment.width!, attachment.height!),
+			)
+
+			if (scaleFactor < 1) {
+				return reply(
+					{
+						content: "Image is too large to scale.",
+					},
+					{ ephemeral: true },
+				)
+			}
+
+			const scaledBuffer = await scalePixelArt(imageBuffer, scaleFactor)
+
+			reply(
+				{
+					files: [
+						{
+							attachment: scaledBuffer,
+							name: `${message.id}-${attachment.id}-scaled.png`,
+						},
+					],
+					components: [
+						new MessageActionRow().addComponents(
+							new MessageButton()
+								.setLabel("Original message")
+								.setStyle("LINK")
+								.setURL(message.url),
+						),
+					],
+				},
+				{ ephemeral: false },
+			)
+		} catch (error) {
+			reply(
+				{
+					content: `Scaling or fetching the image failed:\n\`\`\`${error}\`\`\``,
+				},
+				{ ephemeral: true },
+			)
+		}
+	}
+}
+
 // receive interactions
 client.on("interactionCreate", async (interaction) => {
 	if (interaction.isCommand()) {
@@ -67,50 +242,19 @@ client.on("interactionCreate", async (interaction) => {
 		}
 	} else if (interaction.isContextMenu()) {
 		if (interaction.commandName === "Scale pixel art") {
-			const message = interaction.options.getMessage("message") as Message
-			const attachments = Array.from(message.attachments)
-			const attachment =
-				attachments.length > 0
-					? (attachments[0] as unknown as APIAttachment)
-					: null
+			const originalMessage = interaction.options.getMessage("message") as
+				| Message
+				| APIMessage
 
-			if (!attachment) {
-				interaction.reply({
-					content:
-						"Picasso can only scale pixel art on messages that have an image attached.",
-					ephemeral: true,
-				})
-			} else if (typeof attachment === "string") {
-				interaction.reply({
-					content: "Could not fetch attachment: was of type `string`",
-					ephemeral: true,
-				})
-			} else if (attachment.proxy_url.endsWith(".gif")) {
-				interaction.reply({
-					content:
-						"Picasso can not scale GIFs yet. Please upload a PNG or JPG still image.",
-					ephemeral: true,
-				})
-			} else if (!/\.(png|jpg|jpeg)$/.test(attachment.proxy_url)) {
-				interaction.reply({
-					content: "Attachments must be a PNG or JPG image.",
-					ephemeral: true,
-				})
-			} else {
-				try {
-					await (await fetch(attachment.proxy_url)).buffer()
-					// TODO : scale image and send as attachment
-					interaction.reply({
-						content: "scaled content goes here",
-						ephemeral: false,
-					})
-				} catch (error) {
-					interaction.reply({
-						content: `Could not fetch attachment:\n\`\`\`${error}\`\`\``,
-						ephemeral: true,
-					})
-				}
-			}
+			const message = isRealMessage(originalMessage)
+				? (originalMessage as Message)
+				: await (
+						(await client.channels.fetch(
+							(originalMessage as APIMessage).channel_id,
+						)) as TextChannel | NewsChannel | ThreadChannel | DMChannel
+				  ).messages.fetch((originalMessage as APIMessage).id)
+
+			await scaleImageFromMessage(message, interaction.reply)
 		}
 	}
 })
