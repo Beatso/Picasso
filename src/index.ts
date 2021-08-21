@@ -60,7 +60,7 @@ client.once("ready", () => {
 					: // else register as guild commands (if in development environment)
 					  (Routes.applicationGuildCommands(
 							client.user!.id,
-							"725272235090378803",
+							process.env.TESTING_SERVER_ID!,
 					  ) as unknown as `/${string}`),
 				{
 					body: [
