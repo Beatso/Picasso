@@ -260,4 +260,4 @@ client.on("interactionCreate", async (interaction) => {
 })
 
 // log in client
-client.login(process.env.bottoken)
+client.login(process.env.BOT_TOKEN)
