@@ -46,7 +46,7 @@ client.once("ready", () => {
 
 	// slash commands and context menus
 
-	const rest = new REST({ version: "9" }).setToken(process.env.bottoken!)
+	const rest = new REST({ version: "9" }).setToken(process.env.BOT_TOKEN!)
 
 	// refresh slash commands and context menus
 	;(async () => {
