@@ -54,10 +54,14 @@ client.once("ready", () => {
 			console.log("Started refreshing slash commands and context menus")
 
 			await rest.put(
-				Routes.applicationGuildCommands(
-					client.user!.id,
-					"725272235090378803",
-				) as unknown as `/${string}`,
+				process.env.NODE_ENV === "production"
+					? // register as global commands if in production environment
+					  Routes.applicationCommands(client.user!.id)
+					: // else register as guild commands (if in development environment)
+					  (Routes.applicationGuildCommands(
+							client.user!.id,
+							"725272235090378803",
+					  ) as unknown as `/${string}`),
 				{
 					body: [
 						{
