@@ -4,7 +4,10 @@
 	"description": "",
 	"main": "build/index.js",
 	"scripts": {
+		"build": "tsc",
+		"prestart": "npm build",
 		"start": "node .",
+		"watch": "node-dev src/index.ts --notify=false",
 		"prettier:check": "prettier --check .",
 		"prettier:write": "prettier --write ."
 	},
@@ -26,7 +29,9 @@
 	},
 	"devDependencies": {
 		"@types/node": "^16.7.0",
-		"@types/node-fetch": "^2.5.12"
+		"@types/node-fetch": "^2.5.12",
+		"node-dev": "^7.0.0",
+		"ts-node": "^10.2.1"
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.3",
