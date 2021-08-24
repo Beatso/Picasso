@@ -167,9 +167,11 @@ const scaleImageFromMessage = async (
 					isFromReply && baseOptions.hasOwnProperty("files")
 						? {
 								embeds: [
-									new MessageEmbed().setDescription(
-										"You can now use context menus to scale images! Right click on a message with an image ➡ **Apps**  ➡ **Scale Pixel Art**",
-									),
+									new MessageEmbed()
+										.setDescription(
+											"You can now use context menus to scale images!\nRight click on a message with an image ➡ **Apps**  ➡ **Scale Pixel Art**",
+										)
+										.setColor(0x2f3136), // embed background colour
 								],
 						  }
 						: {},
