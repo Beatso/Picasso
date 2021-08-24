@@ -3,10 +3,10 @@ import { APIMessage, Routes } from "discord-api-types/v9"
 import {
 	BufferResolvable,
 	Client,
+	ContextMenuInteraction,
 	DMChannel,
 	FileOptions,
 	Intents,
-	InteractionReplyOptions,
 	Message,
 	MessageActionRow,
 	MessageActionRowOptions,
@@ -14,7 +14,6 @@ import {
 	MessageButton,
 	MessageEmbed,
 	MessageMentionOptions,
-	MessagePayload,
 	NewsChannel,
 	StickerResolvable,
 	TextChannel,
@@ -92,12 +91,14 @@ const isRealMessage = (message: Message | APIMessage) =>
 
 /** Scales an image from a given message. Will show the user errors if something goes wrong (e.g. there is no image on the message)
  * @param {Message} message - The message to scale from
+ * @param {ContextMenuInteraction} [interaction] - The interaction to reply to
  */
 const scaleImageFromMessage = async (
 	message: Message,
-	interactionReply?: (
-		options: string | MessagePayload | InteractionReplyOptions,
-	) => Promise<Message | APIMessage | void>,
+	// interactionReply?: (
+	// 	options: string | MessagePayload | InteractionReplyOptions,
+	// ) => Promise<Message | APIMessage | void>,
+	interaction?: ContextMenuInteraction,
 ) => {
 	const attachments = Array.from(message.attachments)
 	const attachment = attachments.length > 0 ? attachments[0][1] : null
@@ -152,8 +153,8 @@ const scaleImageFromMessage = async (
 		baseOptions: string | BaseMessageOptions,
 		interactionOptions?: InteractionReplySpecificMessageOptions,
 	) => {
-		if (interactionReply) {
-			interactionReply(Object.assign(baseOptions, interactionOptions || {}))
+		if (interaction) {
+			interaction.reply(Object.assign(baseOptions, interactionOptions || {}))
 		} else {
 			message.reply(baseOptions)
 		}
@@ -295,7 +296,7 @@ client.on("interactionCreate", async (interaction) => {
 						)) as TextChannel | NewsChannel | ThreadChannel | DMChannel
 				  ).messages.fetch((originalMessage as APIMessage).id)
 
-			await scaleImageFromMessage(message, interaction.reply)
+			await scaleImageFromMessage(message, interaction)
 		}
 	}
 })
