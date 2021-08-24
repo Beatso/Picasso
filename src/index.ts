@@ -26,7 +26,11 @@ import scalePixelArt from "scale-pixel-art"
 dotenvConfig()
 
 const client = new Client({
-	intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+	intents: [
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.DIRECT_MESSAGES,
+	],
 })
 
 // client logs in
@@ -96,6 +100,7 @@ const isRealMessage = (message: Message | APIMessage) =>
 /** Scales an image from a given message. Will show the user errors if something goes wrong (e.g. there is no image on the message)
  * @param {Message} message - The message to scale from
  * @param {ContextMenuInteraction} [interaction] - The interaction to reply to
+ * @returns {Promise<boolean>} - `true` if the nothing was sent, and the message was a reply.
  */
 const scaleImageFromMessage = async (
 	message: Message,
@@ -165,6 +170,7 @@ const scaleImageFromMessage = async (
 	}
 
 	if (!attachment?.width) {
+		if (message.reference) return true
 		reply(
 			{
 				content:
@@ -317,6 +323,30 @@ client.on("interactionCreate", async (interaction) => {
 				  ).messages.fetch((originalMessage as APIMessage).id)
 
 			await scaleImageFromMessage(message, interaction)
+		}
+	}
+})
+
+// original functionality (mention bot to scale)
+client.on("messageCreate", async (message) => {
+	if (
+		!message.content || // when message content is a priviliged intent, give up trying to scale.
+		!new RegExp(`<@!?${client.user!.id}>`).test(message.content) || // message does not include bot mention
+		message.author.bot // message is from a bot
+	) {
+		return
+	}
+
+	if (await scaleImageFromMessage(message)) {
+		console.debug("trying to scale from reply")
+		try {
+			scaleImageFromMessage(
+				await message.channel.messages.fetch(message.reference!.messageId!),
+			)
+		} catch (error) {
+			message.reply(
+				`Something went wrong trying to scale that message: \`\`\`${error}\`\`\`\nTry using the context menu instead to scale images.`,
+			)
 		}
 	}
 })
