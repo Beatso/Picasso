@@ -69,8 +69,7 @@ client.once("ready", () => {
 						},
 						{
 							name: "invite",
-							description:
-								"Gives you a link to invite the bot to your own server.",
+							description: "Invite Picasso to your own server.",
 						},
 						{
 							type: 3, // message context menu
@@ -251,7 +250,7 @@ client.on("interactionCreate", async (interaction) => {
 			await interaction.reply("Pong!")
 		} else if (interaction.commandName === "invite") {
 			await interaction.reply({
-				content: "Use the button to invite Picasso to your own server:",
+				content: "Invite Picasso to your own server:",
 				components: [
 					new MessageActionRow().addComponents(
 						new MessageButton()
