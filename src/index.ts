@@ -26,11 +26,7 @@ import scalePixelArt from "scale-pixel-art"
 dotenvConfig()
 
 const client = new Client({
-	intents: [
-		Intents.FLAGS.GUILDS,
-		Intents.FLAGS.GUILD_MESSAGES,
-		Intents.FLAGS.DIRECT_MESSAGES,
-	],
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 })
 
 // client logs in
@@ -99,14 +95,13 @@ const isRealMessage = (message: Message | APIMessage) =>
 
 /** Scales an image from a given message. Will show the user errors if something goes wrong (e.g. there is no image on the message)
  * @param {Message} message - The message to scale from
+ * @param {boolean} isFromReply - Whether this has been triggered from a reply to a message with a reply
  * @param {ContextMenuInteraction} [interaction] - The interaction to reply to
  * @returns {Promise<boolean>} - `true` if the nothing was sent, and the message was a reply.
  */
 const scaleImageFromMessage = async (
 	message: Message,
-	// interactionReply?: (
-	// 	options: string | MessagePayload | InteractionReplyOptions,
-	// ) => Promise<Message | APIMessage | void>,
+	isFromReply: boolean,
 	interaction?: ContextMenuInteraction,
 ) => {
 	const attachments = Array.from(message.attachments)
@@ -165,7 +160,21 @@ const scaleImageFromMessage = async (
 		if (interaction) {
 			interaction.reply(Object.assign(baseOptions, interactionOptions || {}))
 		} else {
-			message.reply(baseOptions)
+			message.reply(
+				Object.assign(
+					baseOptions,
+					// suggest context menu if is from reply and is successful
+					isFromReply && baseOptions.hasOwnProperty("files")
+						? {
+								embeds: [
+									new MessageEmbed().setDescription(
+										"You can now use context menus to scale images! Right click on a message with an image ➡ **Apps**  ➡ **Scale Pixel Art**",
+									),
+								],
+						  }
+						: {},
+				),
+			)
 		}
 	}
 
@@ -322,7 +331,7 @@ client.on("interactionCreate", async (interaction) => {
 						)) as TextChannel | NewsChannel | ThreadChannel | DMChannel
 				  ).messages.fetch((originalMessage as APIMessage).id)
 
-			await scaleImageFromMessage(message, interaction)
+			await scaleImageFromMessage(message, false, interaction)
 		}
 	}
 })
@@ -337,11 +346,12 @@ client.on("messageCreate", async (message) => {
 		return
 	}
 
-	if (await scaleImageFromMessage(message)) {
+	if (await scaleImageFromMessage(message, false)) {
 		console.debug("trying to scale from reply")
 		try {
 			scaleImageFromMessage(
 				await message.channel.messages.fetch(message.reference!.messageId!),
+				true,
 			)
 		} catch (error) {
 			message.reply(
