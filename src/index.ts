@@ -68,6 +68,11 @@ client.once("ready", () => {
 							description: "Checks the bot is online.",
 						},
 						{
+							name: "invite",
+							description:
+								"Gives you a link to invite the bot to your own server.",
+						},
+						{
 							type: 3, // message context menu
 							name: "Scale pixel art",
 						},
@@ -244,6 +249,22 @@ client.on("interactionCreate", async (interaction) => {
 	if (interaction.isCommand()) {
 		if (interaction.commandName === "ping") {
 			await interaction.reply("Pong!")
+		} else if (interaction.commandName === "invite") {
+			await interaction.reply({
+				content: "Use the button to invite Picasso to your own server:",
+				components: [
+					new MessageActionRow().addComponents(
+						new MessageButton()
+							.setStyle("LINK")
+							.setLabel("Invite me!")
+							.setURL(
+								`https://discord.com/oauth2/authorize?client_id=${
+									client.user!.id
+								}&scope=bot&permissions=35840`,
+							),
+					),
+				],
+			})
 		}
 	} else if (interaction.isContextMenu()) {
 		if (interaction.commandName === "Scale pixel art") {
