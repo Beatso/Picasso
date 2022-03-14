@@ -26,7 +26,7 @@ import scalePixelArt from "scale-pixel-art"
 dotenvConfig()
 
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+	intents: [Intents.FLAGS.GUILDS],
 })
 
 // client logs in
@@ -334,31 +334,6 @@ client.on("interactionCreate", async (interaction) => {
 				  ).messages.fetch((originalMessage as APIMessage).id)
 
 			await scaleImageFromMessage(message, false, interaction)
-		}
-	}
-})
-
-// original functionality (mention bot to scale)
-client.on("messageCreate", async (message) => {
-	if (
-		!message.content || // when message content is a priviliged intent, give up trying to scale.
-		!new RegExp(`<@!?${client.user!.id}>`).test(message.content) || // message does not include bot mention
-		message.author.bot // message is from a bot
-	) {
-		return
-	}
-
-	if (await scaleImageFromMessage(message, false)) {
-		console.debug("trying to scale from reply")
-		try {
-			scaleImageFromMessage(
-				await message.channel.messages.fetch(message.reference!.messageId!),
-				true,
-			)
-		} catch (error) {
-			message.reply(
-				`Something went wrong trying to scale that message: \`\`\`${error}\`\`\`\nTry using the context menu instead to scale images.`,
-			)
 		}
 	}
 })
