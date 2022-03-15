@@ -1,5 +1,5 @@
 import { REST } from "@discordjs/rest"
-import { APIMessage, Routes } from "discord-api-types/v9"
+import { Routes } from "discord-api-types/v9"
 import {
 	BufferResolvable,
 	Client,
@@ -22,6 +22,8 @@ import {
 import { config as dotenvConfig } from "dotenv"
 import fetch from "node-fetch"
 import scalePixelArt from "scale-pixel-art"
+
+type APIMessage = any // fixes errors temporarily
 
 dotenvConfig()
 
@@ -61,6 +63,7 @@ client.once("ready", () => {
 							client.user!.id,
 							process.env.TESTING_SERVER_ID!,
 					  ) as unknown as `/${string}`),
+
 				{
 					body: [
 						{
@@ -70,6 +73,18 @@ client.once("ready", () => {
 						{
 							name: "invite",
 							description: "Invite Picasso to your own server.",
+						},
+						{
+							name: "scale-pixel-art",
+							description: "Scales pixel art from an attachment.",
+							options: [
+								{
+									name: "image",
+									description: "The image to scale",
+									type: 11, // attachment
+									required: true,
+								},
+							],
 						},
 						{
 							type: 3, // message context menu
@@ -281,6 +296,9 @@ client.on("interactionCreate", async (interaction) => {
 					),
 				],
 			})
+		} else if (interaction.commandName === "scale-pixel-art") {
+			console.log(interaction.options.get("image", true))
+			await interaction.reply("Coming soon...")
 		}
 	} else if (interaction.isContextMenu()) {
 		if (interaction.commandName === "Scale pixel art") {

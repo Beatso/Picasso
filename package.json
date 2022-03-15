@@ -5,7 +5,7 @@
 	"main": "build/index.js",
 	"scripts": {
 		"build": "tsc",
-		"prestart": "npm build",
+		"prestart": "npm run build",
 		"start": "node .",
 		"watch": "node-dev src/index.ts --notify=false",
 		"prettier:check": "prettier --check .",
@@ -19,8 +19,8 @@
 	},
 	"dependencies": {
 		"@discordjs/rest": "0.1.0-canary.0",
-		"discord-api-types": "^0.22.0",
-		"discord.js": "^13.1.0",
+		"discord-api-types": "^0.29.0",
+		"discord.js": "^14.0.0-dev.1647259751.2297c2b",
 		"dotenv": "^10.0.0",
 		"node-fetch": "^2.6.1",
 		"prettier": "^2.3.2",
