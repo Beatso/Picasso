@@ -234,41 +234,6 @@ client.on("interactionCreate", async (interaction) => {
 
 			const originalMessageIsReal = isRealMessage(originalMessage)
 
-			// code to give user error if bot is not in server.
-			// doesn't currently work, and not sure why this was necessary.
-			// leaving in for now in case it is needed it later
-
-			// console.debug({ originalMessage, originalMessageIsReal })
-
-			// if (!originalMessageIsReal) {
-			// 	const apiMessage = originalMessage as APIMessage
-			// 	const channelId = apiMessage.channel_id
-			// 	console.debug({
-			// 		channelId,
-			// 		clientIsInChannel: client.channels.cache.has(channelId!),
-			// 	})
-			// 	if (!channelId || !client.channels.cache.has(channelId)) {
-			// 		// no guild or guild not cached - the client is not in the guild
-			// 		return interaction.reply({
-			// 			content:
-			// 				"Picasso must be in the server and have access to the channel to work.",
-			// 			ephemeral: true,
-			// 			components: [
-			// 				new ActionRow().addComponents(
-			// 					new ButtonComponent()
-			// 						.setLabel("Invite to server")
-			// 						.setStyle("LINK")
-			// 						.setURL(
-			// 							`https://discord.com/oauth2/authorize?client_id=${
-			// 								client.user!.id
-			// 							}&scope=bot&permissions=35840`,
-			// 						),
-			// 				),
-			// 			],
-			// 		})
-			// 	}
-			// }
-
 			const message = originalMessageIsReal
 				? (originalMessage as Message)
 				: await (
