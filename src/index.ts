@@ -197,7 +197,7 @@ client.on("interactionCreate", async (interaction) => {
 				components: [
 					new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
 						new ButtonBuilder()
-							.setStyle(ButtonStyle.Primary)
+							.setStyle(ButtonStyle.Link)
 							.setLabel("Invite me!")
 							.setURL(
 								`https://discord.com/oauth2/authorize?client_id=${
