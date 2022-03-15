@@ -118,7 +118,7 @@ const scaleImageFromMessage = async (
 	const attachments = Array.from(message.attachments)
 	const attachment = attachments.length > 0 ? attachments[0][1] : null
 
-	/** Replies to the message given by the parent function. If `interactionReply` exists, the message will be a reply to an interaction. Otherwise, the message containing the original image will be replied to.
+	/** Replies to the interaction provided by the parent function.
 	 * @param {InteractionReplyOptions} options - Options for the reply. Includes `content`, `ephemeral`, and `components`.
 	 * @returns {void}
 	 * @example
