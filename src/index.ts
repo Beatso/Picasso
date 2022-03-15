@@ -5,13 +5,14 @@ import {
 	ActivityType,
 	ButtonBuilder,
 	ButtonStyle,
+	ChatInputCommandInteraction,
 	Client,
 	ContextMenuCommandInteraction,
 	DMChannel,
 	GatewayIntentBits,
-	InteractionReplyOptions,
 	Message,
 	MessageActionRowComponentBuilder,
+	MessageAttachment,
 	NewsChannel,
 	TextChannel,
 	ThreadChannel,
@@ -106,54 +107,35 @@ const isRealMessage = (message: Message | APIMessage) =>
 	(message as Message).url !== undefined
 
 /** Scales an image from a given message. Will show the user errors if something goes wrong (e.g. there is no image on the message)
- * @param {Message} message - The message to scale from
- * @param {boolean} isFromReply - Whether this has been triggered from a reply to a message with a reply
- * @param {ContextMenuCommandInteraction} [interaction] - The interaction to reply to
+ * @param {ContextMenuCommandInteraction | ChatInputCommandInteraction} interaction - The interaction that triggered the command
+ * @param {MessageAttachment} attachment - The attachment to scale. This may be invalid; validation is performed in the function
+ * @param {string} [originalMessageUrl] - The URL of the message that triggered the command. [optional]
  * @returns {Promise<boolean>} - `true` if the nothing was sent, and the message was a reply.
  */
-const scaleImageFromMessage = async (
-	message: Message,
-	interaction: ContextMenuCommandInteraction,
+const scaleImageAndSend = async (
+	interaction: ContextMenuCommandInteraction | ChatInputCommandInteraction,
+	attachment: MessageAttachment | null,
+	originalMessageUrl?: string,
 ) => {
-	const attachments = Array.from(message.attachments)
-	const attachment = attachments.length > 0 ? attachments[0][1] : null
-
-	/** Replies to the interaction provided by the parent function.
-	 * @param {InteractionReplyOptions} options - Options for the reply. Includes `content`, `ephemeral`, and `components`.
-	 * @returns {void}
-	 * @example
-	 * // Replys to the message with the content "Hello, world!" and with an attached file. If there is an error, it will be sent ephemerally.
-	 * reply(
-			{
-				content: "Hello, world",
-				files: [{ attachment: fs.readFileSync("./hello_world.txt") }],
-			},
-			{ ephemeral: true },
-		)
-	 */
-	const reply = (options: InteractionReplyOptions) => {
-		interaction.reply(options)
-	}
-
 	if (!attachment?.width) {
-		reply({
+		interaction.reply({
 			content:
 				"Picasso can only scale pixel art on messages that have an image attached.",
 			ephemeral: true,
 		})
 	} else if (typeof attachment === "string") {
-		reply({
+		interaction.reply({
 			content: "Could not fetch attachment: was of type `string`",
 			ephemeral: true,
 		})
 	} else if (attachment.proxyURL.endsWith(".gif")) {
-		reply({
+		interaction.reply({
 			content:
 				"Picasso can not scale GIFs yet. Please upload a PNG or JPG still image.",
 			ephemeral: true,
 		})
 	} else if (!/\.(png|jpg|jpeg)$/.test(attachment.proxyURL)) {
-		reply({
+		interaction.reply({
 			content: "Attachments must be a PNG or JPG image.",
 			ephemeral: true,
 		})
@@ -166,7 +148,7 @@ const scaleImageFromMessage = async (
 			)
 
 			if (scaleFactor < 1) {
-				return reply({
+				return interaction.reply({
 					content: "Image is too large to scale.",
 					ephemeral: true,
 				})
@@ -174,26 +156,29 @@ const scaleImageFromMessage = async (
 
 			const scaledBuffer = await scalePixelArt(imageBuffer, scaleFactor)
 
-			const row =
-				new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-					new ButtonBuilder()
-						.setLabel("Original message")
-						.setStyle(ButtonStyle.Primary)
-						.setURL(message.url),
-				)
+			const row = originalMessageUrl
+				? [
+						new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+							new ButtonBuilder()
+								.setLabel("Original message")
+								.setStyle(ButtonStyle.Link)
+								.setURL(originalMessageUrl),
+						),
+				  ]
+				: []
 
-			reply({
+			interaction.reply({
 				files: [
 					{
 						attachment: scaledBuffer,
-						name: `${message.id}-${attachment.id}-scaled.png`,
+						name: `${attachment.id}-scaled.png`,
 					},
 				],
 				ephemeral: false,
-				components: [row],
+				components: row,
 			})
 		} catch (error) {
-			reply({
+			interaction.reply({
 				content: `Scaling or fetching the image failed:\n\`\`\`${error}\`\`\``,
 				ephemeral: true,
 			})
@@ -203,7 +188,7 @@ const scaleImageFromMessage = async (
 
 // receive interactions
 client.on("interactionCreate", async (interaction) => {
-	if (interaction.isCommand()) {
+	if (interaction.isChatInputCommand()) {
 		if (interaction.commandName === "ping") {
 			await interaction.reply("Pong!")
 		} else if (interaction.commandName === "invite") {
@@ -224,7 +209,12 @@ client.on("interactionCreate", async (interaction) => {
 			})
 		} else if (interaction.commandName === "scale-pixel-art") {
 			console.log(interaction.options.get("image", true))
-			await interaction.reply("Coming soon...")
+			const attachment = interaction.options.get("image", true).attachment
+			if (attachment === undefined) {
+				interaction.reply("Could not find an image to scale.")
+			}
+			await scaleImageAndSend(interaction, attachment as MessageAttachment)
+			// await interaction.reply("Coming soon...")
 		}
 	} else if (interaction.isContextMenuCommand()) {
 		if (interaction.commandName === "Scale pixel art") {
@@ -242,7 +232,10 @@ client.on("interactionCreate", async (interaction) => {
 						)) as TextChannel | NewsChannel | ThreadChannel | DMChannel
 				  ).messages.fetch((originalMessage as APIMessage).id)
 
-			await scaleImageFromMessage(message, interaction)
+			const attachments = Array.from(message.attachments)
+			const attachment = attachments.length > 0 ? attachments[0][1] : null
+
+			await scaleImageAndSend(interaction, attachment, message.url)
 		}
 	}
 })
