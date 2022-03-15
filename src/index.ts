@@ -122,7 +122,7 @@ const scaleImageFromMessage = async (
 	 * @param {InteractionReplyOptions} options - Options for the reply. Includes `content`, `ephemeral`, and `components`.
 	 * @returns {void}
 	 * @example
-	 * // Replys to the message with the content "Hello, world!" and with an attached file; ephemerally if an interaction reply is used.
+	 * // Replys to the message with the content "Hello, world!" and with an attached file. If there is an error, it will be sent ephemerally.
 	 * reply(
 			{
 				content: "Hello, world",
