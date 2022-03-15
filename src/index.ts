@@ -9,6 +9,7 @@ import {
 	Client,
 	ContextMenuCommandInteraction,
 	DMChannel,
+	EmbedBuilder,
 	GatewayIntentBits,
 	Message,
 	MessageActionRowComponentBuilder,
@@ -71,6 +72,10 @@ client.once("ready", () => {
 						{
 							name: "invite",
 							description: "Invite Picasso to your own server.",
+						},
+						{
+							name: "help",
+							description: "Information on how to use the bot.",
 						},
 						{
 							name: "scale-pixel-art",
@@ -205,6 +210,20 @@ client.on("interactionCreate", async (interaction) => {
 								}&scope=bot&permissions=35840`,
 							),
 					),
+				],
+			})
+		} else if (interaction.commandName === "help") {
+			await interaction.reply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle("Picasso Help")
+						.setDescription(
+							"There are two ways to use Picasso: with a slash command (`/scale-pixel-art`), or with a context menu (right-click on a message with an image you'd like to scale) (see below).",
+						)
+						.setImage(
+							"https://cdn.discordapp.com/attachments/725328147742195822/953405061311127562/7ff7bf4f-9a27-4873-b742-2d74a9bb4b46.gif",
+						)
+						.setColor(interaction.guild!.me!.displayColor || null),
 				],
 			})
 		} else if (interaction.commandName === "scale-pixel-art") {
