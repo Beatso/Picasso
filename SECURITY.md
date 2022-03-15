@@ -1,5 +1,7 @@
 # Security Policy
 
+All issues, exploits, dangers and vulnerabilities regarding security or privacy should be reported to the developer as outlined in this policy.
+
 ## Supported Versions
 
 | Version               | Supported          |
@@ -9,6 +11,6 @@
 
 ## Reporting a Vulnerability
 
-If you find a security vulnerabiluy, please email [beatsoweb@gmail.com](mailto:beatsoweb@gmail.com). Keep it private, and **do not** open an issue.
+If you find a security vulnerability, please email [beatsoweb@gmail.com](mailto:beatsoweb@gmail.com). Keep it private, and **do not** open a GitHub issue.
 
 Any other non-sensitive issues should be reported as a usual [issue](https://github.com/Beatso/Picasso/issues/new).
