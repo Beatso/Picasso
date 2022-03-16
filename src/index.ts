@@ -128,27 +128,26 @@ const scaleImageAndSend = async (
 	attachment: MessageAttachment | null,
 	originalMessageUrl?: string,
 ) => {
+	if (!interaction.deferred) {
+		interaction.deferReply()
+	}
 	if (!attachment?.width) {
-		interaction.reply({
+		interaction.editReply({
 			content:
 				"Picasso can only scale pixel art on messages that have an image attached.",
-			ephemeral: true,
 		})
 	} else if (typeof attachment === "string") {
-		interaction.reply({
+		interaction.editReply({
 			content: "Could not fetch attachment: was of type `string`",
-			ephemeral: true,
 		})
 	} else if (attachment.proxyURL.endsWith(".gif")) {
-		interaction.reply({
+		interaction.editReply({
 			content:
 				"Picasso can not scale GIFs yet. Please upload a PNG or JPG still image.",
-			ephemeral: true,
 		})
 	} else if (!/\.(png|jpg|jpeg)$/.test(attachment.proxyURL)) {
-		interaction.reply({
+		interaction.editReply({
 			content: "Attachments must be a PNG or JPG image.",
-			ephemeral: true,
 		})
 	} else {
 		try {
@@ -159,9 +158,8 @@ const scaleImageAndSend = async (
 			)
 
 			if (scaleFactor < 1) {
-				return interaction.reply({
+				return interaction.editReply({
 					content: "Image is too large to scale.",
-					ephemeral: true,
 				})
 			}
 
@@ -178,20 +176,18 @@ const scaleImageAndSend = async (
 				  ]
 				: []
 
-			interaction.reply({
+			interaction.editReply({
 				files: [
 					{
 						attachment: scaledBuffer,
 						name: `${attachment.id}-scaled.png`,
 					},
 				],
-				ephemeral: false,
 				components: row,
 			})
 		} catch (error) {
-			interaction.reply({
+			interaction.editReply({
 				content: `Scaling or fetching the image failed:\n\`\`\`${error}\`\`\``,
-				ephemeral: true,
 			})
 		}
 	}
@@ -260,15 +256,17 @@ client.on("interactionCreate", async (interaction) => {
 				],
 			})
 		} else if (interaction.commandName === "scale-pixel-art") {
+			await interaction.deferReply()
 			console.log(interaction.options.get("image", true))
 			const attachment = interaction.options.get("image", true).attachment
 			if (attachment === undefined) {
-				interaction.reply("Could not find an image to scale.")
+				interaction.editReply("Could not find an image to scale.")
 			}
 			await scaleImageAndSend(interaction, attachment as MessageAttachment)
 			// await interaction.reply("Coming soon...")
 		}
 	} else if (interaction.isContextMenuCommand()) {
+		await interaction.deferReply()
 		if (interaction.commandName === "Scale pixel art") {
 			const originalMessage = interaction.options.getMessage("message") as
 				| Message
