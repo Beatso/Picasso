@@ -30,9 +30,15 @@ const client = new Client({
 	intents: [GatewayIntentBits.Guilds],
 })
 
+let inviteLink: string
+
 // client logs in
 client.once("ready", () => {
 	console.log("Logged in as", client.user?.tag)
+
+	inviteLink = `https://discord.com/oauth2/authorize?client_id=${
+		client.user!.id
+	}&scope=bot&permissions=35840`
 
 	// set status
 	;(function updateStatus() {
@@ -204,11 +210,7 @@ client.on("interactionCreate", async (interaction) => {
 						new ButtonBuilder()
 							.setStyle(ButtonStyle.Link)
 							.setLabel("Invite me!")
-							.setURL(
-								`https://discord.com/oauth2/authorize?client_id=${
-									client.user!.id
-								}&scope=bot&permissions=35840`,
-							),
+							.setURL(inviteLink),
 					),
 				],
 			})
@@ -223,7 +225,38 @@ client.on("interactionCreate", async (interaction) => {
 						.setImage(
 							"https://cdn.discordapp.com/attachments/725328147742195822/953405061311127562/7ff7bf4f-9a27-4873-b742-2d74a9bb4b46.gif",
 						)
-						.setColor(interaction.guild!.me!.displayColor || null),
+						.setColor(interaction.guild!.me!.displayColor || null)
+						.setThumbnail(client.user!.avatarURL()),
+				],
+				components: [
+					new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+						new ButtonBuilder()
+							.setStyle(ButtonStyle.Link)
+							.setLabel("Invite to your server")
+							.setURL(inviteLink),
+						new ButtonBuilder()
+							.setStyle(ButtonStyle.Link)
+							.setLabel("GitHub")
+							.setURL("https://github.com/Beatso/Picasso"),
+						new ButtonBuilder()
+							.setStyle(ButtonStyle.Link)
+							.setLabel("Support server")
+							.setURL("https://discord.gg/MgM3w6YFWy"),
+					),
+					new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+						new ButtonBuilder()
+							.setStyle(ButtonStyle.Link)
+							.setLabel("Terms of Service")
+							.setURL(
+								"https://github.com/Beatso/Picasso/blob/main/legal/TERMS_OF_SERVICE.md",
+							),
+						new ButtonBuilder()
+							.setStyle(ButtonStyle.Link)
+							.setLabel("Privacy Policy")
+							.setURL(
+								"https://github.com/Beatso/Picasso/blob/main/legal/PRIVACY_POLICY.md",
+							),
+					),
 				],
 			})
 		} else if (interaction.commandName === "scale-pixel-art") {
