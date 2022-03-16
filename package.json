@@ -1,18 +1,42 @@
 {
-  "name": "picasso",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "discord.js": "github:discordjs/discord.js#pull/4874/head",
-    "dotenv": "^16.0.0",
-    "request": "^2.88.2",
-    "scale-pixel-art": "^1.0.0"
-  }
+	"name": "picasso",
+	"version": "1.0.0",
+	"description": "",
+	"main": "build/index.js",
+	"scripts": {
+		"build": "tsc",
+		"prestart": "npm run build",
+		"start": "node .",
+		"watch": "node-dev src/index.ts --notify=false",
+		"prettier:check": "prettier --check .",
+		"prettier:write": "prettier --write ."
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"engines": {
+		"node": ">=16.6.0"
+	},
+	"dependencies": {
+		"@discordjs/rest": "0.1.0-canary.0",
+		"discord-api-types": "^0.29.0",
+		"discord.js": "^14.0.0-dev.1647259751.2297c2b",
+		"dotenv": "^10.0.0",
+		"node-fetch": "^2.6.1",
+		"prettier": "^2.3.2",
+		"scale-pixel-art": "^1.1.1",
+		"typescript": "^4.3.5"
+	},
+	"devDependencies": {
+		"@types/node": "^16.7.1",
+		"@types/node-fetch": "^2.5.12",
+		"node-dev": "^7.0.0",
+		"ts-node": "^10.2.1"
+	},
+	"optionalDependencies": {
+		"bufferutil": "^4.0.3",
+		"erlpack": "^0.1.3",
+		"utf-8-validate": "^5.0.5",
+		"zlib-sync": "^0.1.7"
+	}
 }
