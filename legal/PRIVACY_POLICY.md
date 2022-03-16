@@ -1,6 +1,6 @@
 # Picasso - Privacy Policy
 
-By using Picasso, you agree to the [Terms of Service](https://github.com/Beatso/Picasso/blob/legal/TERMS_OF_SERVICE.md), [Privacy Policy](https://github.com/Beatso/Picasso/blob/main/legal/PRIVACY_POLICY.md) and [Security Policy](https://github.com/Beatso/Picasso/blob/main/SECURITY.md).
+By using Picasso, you agree to the [Terms of Service](https://github.com/Beatso/Picasso/blob/main/legal/TERMS_OF_SERVICE.md), [Privacy Policy](https://github.com/Beatso/Picasso/blob/main/legal/PRIVACY_POLICY.md) and [Security Policy](https://github.com/Beatso/Picasso/blob/main/SECURITY.md). This document may be changed at any time and without notice. It is your responsibility to check this document for any changes.
 
 "I", "we", "me", "us" and "the developer" refers to Beatso, the developer of the bot.
 
