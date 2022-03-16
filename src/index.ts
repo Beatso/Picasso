@@ -257,7 +257,6 @@ client.on("interactionCreate", async (interaction) => {
 			})
 		} else if (interaction.commandName === "scale-pixel-art") {
 			await interaction.deferReply()
-			console.log(interaction.options.get("image", true))
 			const attachment = interaction.options.get("image", true).attachment
 			if (attachment === undefined) {
 				interaction.editReply("Could not find an image to scale.")
