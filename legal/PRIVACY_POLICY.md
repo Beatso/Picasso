@@ -16,4 +16,8 @@ By giving any image(s) to Picasso, whether that be through context menus or thro
 - The image will be passed through our server.
 - The image will be stored for a short period of time and then deleted.
 
-No data, including messages, images and profiles is collected, except for data passing through the server for the purpose of scaling the image. This data is deleted immediately and cannot be seen by anyone. No data is given to any third parties.
+No data, including messages, images and profiles is collected, except for data passing through the server for the purpose of scaling the image. This data is deleted immediately and cannot be seen by anyone. No data is given to any third parties, except:
+- The image will be sent to Discord's API in order to send on the channel.
+- Any users with access to read message history on the channel will be able to see the scaled image.
+
+For more information on how Discord handles your data, see [Discord's Privacy Policy](https://discord.com/privacy).
